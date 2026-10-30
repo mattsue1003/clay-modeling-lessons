@@ -75,6 +75,17 @@ header p{margin:4px 0 0;color:var(--muted);font-size:15px}
 .stage-wrap{position:relative;width:100%;max-width:min(100%,calc(100vh - 160px));min-width:min(100%,320px);aspect-ratio:1/1;background:var(--mat);border-radius:28px;overflow:hidden;border:6px solid var(--surface);box-shadow:0 6px 0 var(--line)}
 #stage{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
 .fsbtn{position:absolute;top:12px;right:12px;min-height:40px;padding:4px 14px;border:none;border-radius:999px;background:rgba(30,20,20,.6);color:#fff;font:inherit;font-size:15px;cursor:pointer;z-index:3}
+.v3btn{position:absolute;top:12px;left:12px;min-height:40px;padding:4px 14px;border:none;border-radius:999px;background:var(--accent);color:#fff;font-family:var(--font-display);font-size:16px;cursor:pointer;z-index:3;box-shadow:0 3px 0 var(--accent-deep)}
+.v3{position:absolute;inset:0;z-index:5;background:radial-gradient(circle at 50% 40%,#fdf6ec,#e9dccb);display:flex;flex-direction:column}
+.v3 canvas{flex:1;width:100%;min-height:0;display:block;touch-action:none;cursor:grab}
+.v3 canvas:active{cursor:grabbing}
+.v3 .v3top{position:absolute;top:10px;left:10px;right:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;pointer-events:none}
+.v3 .v3top b{font-family:var(--font-display);font-weight:400;font-size:22px;color:#3d2c30;background:rgba(255,255,255,.8);padding:2px 14px;border-radius:999px}
+.v3 .v3top button,.v3 .v3bar button{pointer-events:auto;min-height:40px;padding:4px 14px;border:2px solid #f1d6cb;border-radius:999px;background:#fff;color:#3d2c30;font:inherit;font-size:15px;cursor:pointer}
+.v3 .v3top .v3close{margin-left:auto;background:#3d2c30;color:#fff;border-color:#3d2c30}
+.v3 .v3bar{position:absolute;left:10px;right:10px;bottom:10px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.v3 .v3bar button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+.v3 .v3msg{position:absolute;inset:0;display:grid;place-items:center;font-size:18px;color:#7b6266;pointer-events:none}
 .fscap,.fsnav{display:none}
 .stage-wrap.is-fs{position:fixed;top:0;left:0;z-index:50;width:100vw;height:100vh;height:100dvh;max-width:none;min-width:0;aspect-ratio:auto;border:none;border-radius:0;box-shadow:none}
 .stage-wrap:fullscreen{width:100vw;height:100dvh;max-width:none;aspect-ratio:auto;border:none;border-radius:0}
@@ -205,6 +216,13 @@ button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid
         <canvas id="stage" aria-label="輕黏土舞台"></canvas>
         <div class="hud"><span id="hint">準備中…</span><span class="tag" id="tag"></span></div>
         <button class="fsbtn" id="fsBtn" aria-label="全螢幕觀看">⛶ 全螢幕</button>
+        <button class="v3btn" id="v3Btn">⟳ 3D 轉動看</button>
+        <div class="v3" id="v3" hidden>
+          <canvas id="v3c" aria-label="3D 黏土作品，可以拖曳轉動"></canvas>
+          <div class="v3top"><b id="v3Title"></b><button class="v3close" id="v3Close">✕ 回到步驟</button></div>
+          <div class="v3bar"><button id="v3Auto" aria-pressed="true">自動轉</button><button id="v3Front">正面</button><button id="v3Side">側面</button><button id="v3Top">俯看</button><button id="v3Step" aria-pressed="false">只看到這一步</button></div>
+          <div class="v3msg" id="v3Msg">3D 載入中…</div>
+        </div>
         <div class="fscap" id="fsCap"><b id="fsTitle"></b><span id="fsText"></span></div>
         <div class="fsnav" id="fsNav"><button id="fsPrev">◀ 上一步</button><button id="fsReplay">↻ 再看</button><button id="fsNext">下一步 ▶</button></div>
       </div>
@@ -1705,6 +1723,125 @@ matchMedia('(prefers-color-scheme: dark)').addEventListener('change', retheme);
 new MutationObserver(retheme).observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
 
 { const b = $('#beads'), cs = ['#ec6479','#ffd25e','#4fbf9c','#5fa8e8','#a383de','#f7aabd','#f28a38']; for (let i=0;i<80;i++){ const sp = document.createElement('span'); sp.style.setProperty('--c', cs[i%cs.length]); b.appendChild(sp); } }
+/* ---------- 3D 轉動看：把正面的零件變成立體黏土 ---------- */
+let T3 = null;
+const loadThree = () => T3 || (T3 = import('https://cdn.jsdelivr.net/npm/three@0.160.0/+esm'));
+const V3 = {open:false, raf:0, yaw:0, pitch:.18, dist:0, auto:true, onlyStep:false, renderer:null, scene:null, cam:null, model:null, drag:null};
+function half3(p){ // 零件前後方向的半厚度
+  const w = p.w || 0, h = p.h || 0;
+  switch (p.k){
+    case 'ball': case 'eye': case 'oval': return Math.min(w, h)/2;
+    case 'drop': return w/2;
+    case 'dome': return w*.4;
+    case 'block': case 'tri': return Math.min(w, h)*.38;
+    case 'ring': return Math.min(w, h)*(1-(p.ih||.35))/4 + .8;
+    case 'rope': return p.t/2;
+    default: return (p.th || 3)/2 + .6;
+  }
+}
+function build3D(THREE, ld, mask){
+  const root = new THREE.Group(), surf = [], gy = ld.bb.y1, gx = ld.bb.cx;
+  const V3p = (x, y, z) => new THREE.Vector3(x - gx, gy - y, z);
+  const mat = (hex, k) => new THREE.MeshStandardMaterial({color:hex, roughness: k === 'eye' ? .22 : .78, metalness:0});
+  const front = (x, y) => { let z = -Infinity;
+    for (const q of surf){ if (!inPoly([x,y], q.P)) continue; const nx = (x-q.bb.cx)/(q.bb.w/2||1), ny = (y-q.bb.cy)/(q.bb.h/2||1);
+      z = Math.max(z, q.cz + q.c*(q.flat ? 1 : Math.sqrt(Math.max(.25, 1-nx*nx-ny*ny)))); }
+    return z; };
+  const curveOn = (p, lift, base) => sampleCR(xf(p.lp, p.x, p.y, 1, p.r), 6).map(([x,y]) => { const z = front(x,y); return V3p(x, y, isFinite(z) ? z + lift : base); });
+  const tube = (pts, r, m) => { const g = new THREE.Group(), cv = new THREE.CatmullRomCurve3(pts);
+    g.add(new THREE.Mesh(new THREE.TubeGeometry(cv, Math.max(16, pts.length*3), r, 14, false), m));
+    for (const e of [pts[0], pts[pts.length-1]]){ const s = new THREE.Mesh(new THREE.SphereGeometry(r, 16, 12), m); s.position.copy(e); g.add(s); }
+    return g; };
+  const shapeOf = (P, holes) => { const s = new THREE.Shape(P.map(([x,y]) => new THREE.Vector2(x, -y)));
+    for (const H of holes || []) s.holes.push(new THREE.Path(H.slice().reverse().map(([x,y]) => new THREE.Vector2(x, -y)))); return s; };
+  const extrude = (P, holes, d, bt, bs) => { const g = new THREE.ExtrudeGeometry(shapeOf(P, holes), {depth:Math.max(.2, d - 2*bt), bevelEnabled:true, bevelThickness:bt, bevelSize:bs, bevelOffset:-bs, bevelSegments:5, curveSegments:4, steps:1});
+    g.translate(0, 0, -Math.max(.2, d - 2*bt)/2); return g; };
+  ld.parts.forEach((p, i) => {
+    if (mask && !mask[i]) return;
+    if (p.k === 'line'){ root.add(tube(curveOn(p, .25, 2), (p.w||.9)*.42, new THREE.MeshStandardMaterial({color:'#000', transparent:true, opacity:.32, roughness:1}))); return; }
+    if (p.k === 'hole'){ const z = front(p.x, p.y), m = new THREE.Mesh(new THREE.CircleGeometry(p.w/2, 20), new THREE.MeshBasicMaterial({color:'#2a1408', transparent:true, opacity:.6})); m.position.copy(V3p(p.x, p.y, (isFinite(z) ? z : 2) + .15)); root.add(m); return; }
+    if (p.k === 'stick'){ root.add(tube(xf(p.lp, p.x, p.y, 1, p.r).map(([x,y]) => V3p(x, y, 0)), (p.t||2.4)/2, mat('#d6ab6e'))); return; }
+    const c = half3(p), z0 = front(p.x, p.y), flat = FLATK.has(p.k);
+    const cz = isFinite(z0) ? z0 + (flat ? c*.6 : p.k === 'rope' ? 0 : c*.15) : 0;
+    const m = mat(COLORS[p.c].h, p.k), g = geo(p); let obj;
+    if (p.k === 'rope'){ obj = tube(curveOn(p, p.t*.12, cz).map(v => isFinite(z0) ? v : v.setZ(cz)), p.t/2, m); }
+    else {
+      let G;
+      if (p.k === 'ball' || p.k === 'eye' || p.k === 'oval'){ G = new THREE.SphereGeometry(.5, 40, 28); G.scale(p.w, p.h, c*2); }
+      else if (p.k === 'drop' || p.k === 'dome'){ const half = g.P0.slice(0, NP/2+1).map(([x,y]) => new THREE.Vector2(Math.max(0, x), -y));
+        if (p.k === 'dome') half.push(new THREE.Vector2(0, half[half.length-1].y));
+        G = new THREE.LatheGeometry(half, 40); G.scale(1, 1, p.k === 'dome' ? .8 : 1); }
+      else if (p.k === 'ring'){ const ih = p.ih || .35, H = circlePoly(1, 48).map(([x,y]) => [x*p.w*ih, y*p.h*ih]); G = extrude(g.P0, [H], c*2, c*.7, c*.7); }
+      else if (p.k === 'block' || p.k === 'tri'){ G = extrude(g.P0, null, c*2, c*.55, Math.min(p.w, p.h)*.16); }
+      else G = extrude(g.P0, null, c*2, Math.min(c*.6, 1.2), Math.min(1.2, Math.min(p.w, p.h)*.15));
+      obj = new THREE.Mesh(G, m); obj.rotation.z = -(p.r||0)*D2R; obj.position.copy(V3p(p.x, p.y, cz));
+      if (p.k === 'eye'){ const s = new THREE.Mesh(new THREE.SphereGeometry(p.w*.15, 12, 8), new THREE.MeshBasicMaterial({color:'#fff'})); s.position.set(-p.w*.17, p.h*.2, c*.92); obj.add(s); }
+      if (p.k === 'leaf') leafVeins(p).forEach(v => { const pts = v.map(([x,y]) => new THREE.Vector3(x, -y, c + .05)); const t = tube(pts, Math.max(.25, p.w*.025), new THREE.MeshStandardMaterial({color:'#000', transparent:true, opacity:.28})); obj.add(t); });
+    }
+    obj.traverse(o => { if (o.isMesh){ o.castShadow = true; o.receiveShadow = true; } });
+    root.add(obj);
+    surf.push({P:worldPts(p), bb:bboxOf(worldPts(p)), cz, c, flat: flat || p.k === 'rope' || p.k === 'block'});
+  });
+  return root;
+}
+function v3Lesson(){
+  if (S.mode === 'design') return DS.parts.length ? customLesson() : null;
+  if (S.mode === 'basic'){ const b = BASICS[S.basic]; return {name:b.n, secs:[['', [{...b.p, x:60, y:60}]]]}; }
+  return curLes();
+}
+async function open3D(){
+  const les = v3Lesson(); if (!les){ toast('先放幾個零件再看 3D'); return; }
+  cancelAnim(); V3.open = true; $('#v3').hidden = false; $('#v3Msg').hidden = false; $('#v3Msg').textContent = '3D 載入中…';
+  $('#v3Title').textContent = les.name + '・3D'; $('#v3Step').hidden = S.mode !== 'lesson';
+  let THREE; try { THREE = await loadThree(); } catch(e){ $('#v3Msg').textContent = '3D 工具載入失敗，請確認網路後再試一次'; return; }
+  if (!V3.open) return;
+  const cv = $('#v3c');
+  if (!V3.renderer){ V3.renderer = new THREE.WebGLRenderer({canvas:cv, antialias:true, alpha:true, preserveDrawingBuffer:true}); V3.renderer.shadowMap.enabled = true; V3.renderer.shadowMap.type = THREE.PCFSoftShadowMap; V3.renderer.outputColorSpace = THREE.SRGBColorSpace; }
+  const sc = V3.scene = new THREE.Scene();
+  sc.add(new THREE.HemisphereLight('#fffaf2', '#d9c6b0', 1.5));
+  const key = new THREE.DirectionalLight('#ffffff', 2.2); key.position.set(-60, 120, 140); key.castShadow = true;
+  Object.assign(key.shadow.camera, {left:-90, right:90, top:110, bottom:-30, near:1, far:400}); key.shadow.mapSize.set(2048, 2048); key.shadow.bias = -.0005; key.shadow.radius = 4; sc.add(key);
+  const fill = new THREE.DirectionalLight('#ffe9d6', .7); fill.position.set(90, 40, 80); sc.add(fill);
+  const ld = prepLesson(les), mask = V3.onlyStep && S.mode === 'lesson' && LD ? V.placed : null;
+  if (mask && !mask.some(Boolean)){ $('#v3Msg').textContent = '這一步還沒有黏上任何零件'; }
+  const model = build3D(THREE, ld, mask);
+  const ground = new THREE.Mesh(new THREE.CircleGeometry(Math.max(ld.bb.w, ld.bb.h)*.9 + 20, 64), new THREE.MeshStandardMaterial({color:BOARD, roughness:1}));
+  ground.rotation.x = -Math.PI/2; ground.receiveShadow = true; ground.position.y = -.2;
+  const pivot = new THREE.Group(); pivot.add(model); pivot.add(ground); sc.add(pivot); V3.model = pivot;
+  V3.center = new THREE.Vector3(0, ld.bb.h/2, 0); V3.dist = Math.max(ld.bb.w, ld.bb.h)*2.4 + 40; V3.yaw = .5; V3.pitch = .2;
+  V3.cam = new THREE.PerspectiveCamera(35, 1, 1, 2000);
+  if (!mask || mask.some(Boolean)) $('#v3Msg').hidden = true;
+  cancelAnimationFrame(V3.raf); let last = performance.now();
+  const loop = now => { if (!V3.open) return; const dt = Math.min(.05, (now-last)/1000); last = now;
+    if (V3.auto && !V3.drag) V3.yaw += dt*.5;
+    const r = cv.getBoundingClientRect(), w = Math.max(10, r.width|0), h = Math.max(10, r.height|0), pr = Math.min(2, devicePixelRatio||1);
+    if (cv.width !== Math.round(w*pr) || cv.height !== Math.round(h*pr)){ V3.renderer.setPixelRatio(pr); V3.renderer.setSize(w, h, false); V3.cam.aspect = w/h; V3.cam.updateProjectionMatrix(); }
+    const c = V3.center, d = V3.dist;
+    V3.cam.position.set(c.x + Math.sin(V3.yaw)*Math.cos(V3.pitch)*d, c.y + Math.sin(V3.pitch)*d, c.z + Math.cos(V3.yaw)*Math.cos(V3.pitch)*d); V3.cam.lookAt(c);
+    V3.renderer.render(sc, V3.cam); V3.raf = requestAnimationFrame(loop); };
+  V3.raf = requestAnimationFrame(loop); updateV3UI();
+}
+function close3D(){ V3.open = false; cancelAnimationFrame(V3.raf); $('#v3').hidden = true;
+  if (V3.scene) V3.scene.traverse(o => { if (o.geometry) o.geometry.dispose(); if (o.material) o.material.dispose(); }); V3.scene = null; }
+function updateV3UI(){ $('#v3Auto').setAttribute('aria-pressed', String(V3.auto)); $('#v3Step').setAttribute('aria-pressed', String(V3.onlyStep)); }
+$('#v3Btn').onclick = () => { if (!recording) open3D(); };
+$('#v3Close').onclick = close3D;
+$('#v3Auto').onclick = () => { V3.auto = !V3.auto; updateV3UI(); };
+$('#v3Front').onclick = () => { V3.auto = false; V3.yaw = 0; V3.pitch = .1; updateV3UI(); };
+$('#v3Side').onclick = () => { V3.auto = false; V3.yaw = Math.PI/2; V3.pitch = .1; updateV3UI(); };
+$('#v3Top').onclick = () => { V3.auto = false; V3.yaw = 0; V3.pitch = 1.2; updateV3UI(); };
+$('#v3Step').onclick = () => { V3.onlyStep = !V3.onlyStep; open3D(); };
+{ const cv = $('#v3c'), pts = new Map();
+  cv.addEventListener('pointerdown', e => { cv.setPointerCapture(e.pointerId); pts.set(e.pointerId, [e.clientX, e.clientY]); V3.drag = true; });
+  cv.addEventListener('pointermove', e => { if (!pts.has(e.pointerId)) return; const [px, py] = pts.get(e.pointerId);
+    if (pts.size === 1){ V3.yaw -= (e.clientX-px)*.01; V3.pitch = clamp(V3.pitch + (e.clientY-py)*.008, -.35, 1.45); }
+    else { const o = [...pts].find(([id]) => id !== e.pointerId)[1], d0 = Math.hypot(px-o[0], py-o[1]), d1 = Math.hypot(e.clientX-o[0], e.clientY-o[1]); V3.dist = clamp(V3.dist*d0/(d1||1), 40, 900); }
+    pts.set(e.pointerId, [e.clientX, e.clientY]); });
+  const up = e => { pts.delete(e.pointerId); if (!pts.size) V3.drag = null; };
+  cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
+  cv.addEventListener('wheel', e => { e.preventDefault(); V3.dist = clamp(V3.dist*(1 + e.deltaY*.0012), 40, 900); }, {passive:false}); }
+document.addEventListener('keydown', e => { if (V3.open && e.key === 'Escape') close3D(); });
+
 if (DS.name) $('#dName').value = DS.name;
 readTokens();
 updateDesignStat();
