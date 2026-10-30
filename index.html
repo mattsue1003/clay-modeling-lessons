@@ -624,15 +624,15 @@ const LESSONS = [
   {name:'小雞', theme:'可愛動物', level:1, tip:'可以多做幾隻排成一排，大小不同就是小雞一家人。', secs:[
     ['小腳', [F('orange',50,106,11,5), F('orange',70,106,11,5)], {at:'身體下面'}],
     ['身體', [B('yellow',60,82,46)], {base:true}],
-    ['翅膀', P2(Dr('yellow',37,87,13,20,-125)), {at:'身體兩側，尖尖的地方朝下'}],
+    ['翅膀', P2(Dr('yellow',37,87,13,20,-125,{d3:'slab', dep:8})), {at:'身體兩側，尖尖的地方朝下'}],
     ['頭毛', [Dr('yellow',60,57,8,13), Dr('yellow',53,59,6,10,-30)], {at:'頭頂'}],
     ['眼睛', [E(51,76,4.5), E(69,76,4.5)]],
     ['嘴巴', [Dr('orange',60,84,9,8,180)], {at:'兩個眼睛中間下面，尖的朝下'}],
     ['腮紅', P2(F('pink',45,85,7,4.5)), {at:'眼睛斜下方'}]]},
-  {name:'瓢蟲', theme:'可愛動物', level:1, tip:'斑點可以換成愛心，就是戀愛瓢蟲。', secs:[
+  {name:'瓢蟲', theme:'可愛動物', level:1, view:'top', tip:'斑點可以換成愛心，就是戀愛瓢蟲。', secs:[
     ['觸角', [...P2(Rp('black',[[55,31],[51,23],[46,20]],2.2)), ...P2(B('black',45,19.5,4))], {at:'頭的上方'}],
-    ['頭', [B('black',60,40,24)], {at:'身體上方'}],
-    ['身體', [O('red',60,73,50,54)], {base:true}],
+    ['頭', [B('black',60,40,24,{dep:14})], {at:'身體上方'}],
+    ['身體', [O('red',60,73,50,54,0,{dep:26})], {base:true}],
     ['背上的線', [Rp('black',[[60,47],[60,99]],2.2)], {at:'背的正中間，從上到下'}],
     ['斑點', [F('black',47,63,9), F('black',73,63,9), F('black',45,83,8), F('black',75,83,8), F('black',52,95,6), F('black',68,95,6)], {at:'線的兩邊，左右對稱'}],
     ['眼睛', [B('white',54,39,7), B('white',66,39,7), E(54,39.5,3.4), E(66,39.5,3.4)], {at:'頭上，白色先、黑色疊上去'}],
@@ -695,11 +695,11 @@ const LESSONS = [
     ['糖霜', [Rg('pink',60,64,54,.38,{wave:[9,.05]})], {at:'麵包圈上面，中間的洞對齊'}],
     ['彩色糖粒', [[44,52,30,'yellow'],[53,45,-20,'sky'],[67,46,40,'white'],[77,54,-50,'lime'],[81,68,10,'yellow'],[75,80,60,'sky'],[60,84,-10,'white'],[45,80,-60,'lime'],[39,66,80,'sky'],[60,47.5,0,'yellow']].map(([x,y,a,c]) => spr(c,x,y,a)), {at:'糖霜上，隨意撒'}]]},
   {name:'壽司', theme:'美味點心', level:2, tip:'飯粒的感覺：用牙籤在白色醋飯上輕輕戳出小點點。', secs:[
-    ['醋飯', [Bk('white',36,96,32,16,{n:3.2}), Bk('white',84,96,32,16,{n:3.2})], {base:true}],
-    ['鮭魚', [Bk('orange',36,85,38,11,{n:3, r:-4})], {at:'左邊醋飯上面'}],
+    ['醋飯', [Bk('white',36,96,32,16,{n:3.2, dz:.55}), Bk('white',84,96,32,16,{n:3.2, dz:.55})], {base:true}],
+    ['鮭魚', [Bk('orange',36,85,38,11,{n:3, r:-4, dz:.55})], {at:'左邊醋飯上面'}],
     ['鮭魚紋路', [Rp('white',[[26,80.5],[29,89.5]],1.5), Rp('white',[[34,80],[37,89]],1.5), Rp('white',[[42,79.5],[45,88.5]],1.5)], {at:'鮭魚上，斜斜的'}],
-    ['玉子燒', [Bk('yellow',84,85,36,12,{n:3})], {at:'右邊醋飯上面'}],
-    ['海苔', [Bk('black',84,91,9,27,{n:6})], {at:'玉子燒中間，像腰帶一樣繞過去'}],
+    ['玉子燒', [Bk('yellow',84,85,36,12,{n:3, dz:.55})], {at:'右邊醋飯上面'}],
+    ['海苔', [Bk('black',84,91,9,27,{n:6, d3:'slab', dep:21, free:true})], {at:'玉子燒中間，像腰帶一樣繞過去'}],
     ['表情', [E(31,97,3), E(41,97,3), E(73,98,3), E(95,98,3)], {at:'醋飯上'}],
     ['腮紅', [F('pink',27,100,5,3), F('pink',45,100,5,3), F('pink',70,101,5,3), F('pink',98,101,5,3)]]]},
   {name:'杯子蛋糕', theme:'美味點心', level:3, tip:'奶油一層比一層小，疊的時候中心要對齊才不會歪。', secs:[
@@ -742,20 +742,20 @@ const LESSONS = [
   {name:'玫瑰花', theme:'花草盆栽', level:2, tip:'花瓣壓得越薄越像真的；邊緣用手指輕輕往外翻。', secs:[
     ['花莖', [Rp('green',[[60,70],[60,108]],4)], {at:'中間，直直往下'}],
     ['葉子', [Lf('green',50,92,11,24,-50), Lf('green',70,86,11,24,50)], {at:'花莖兩邊'}],
-    ['後面的花瓣', [F('rose',47,52,22,24,-20,{th:2}), F('rose',73,52,22,24,20,{th:2})], {at:'花的後方兩邊'}],
-    ['前面的花瓣', [F('red',49,64,24,20,-10,{th:2}), F('red',71,64,24,20,10,{th:2}), F('red',60,68,26,18,0,{th:2})], {at:'花的前面，從兩邊往中間疊'}],
-    ['花心', [Dr('red',60,54,14,18), Ln([[57.5,50],[62,48.5],[63.5,53],[59,55.5]],.9)], {at:'正中間'}]]},
+    ['後面的花瓣', [F('rose',47,52,22,24,-20,{th:2, ay:-140, ayr:6}), F('rose',73,52,22,24,20,{th:2, ay:140, ayr:6})], {at:'花的後方兩邊'}],
+    ['前面的花瓣', [F('red',49,64,24,20,-10,{th:2, ay:-65, ayr:8}), F('red',71,64,24,20,10,{th:2, ay:65, ayr:8}), F('red',60,68,26,18,0,{th:2, ay:0, ayr:9})], {at:'花的前面，從兩邊往中間疊'}],
+    ['花心', [Dr('red',60,54,14,18,0,{free:true}), Ln([[57.5,50],[62,48.5],[63.5,53],[59,55.5]],.9)], {at:'正中間'}]]},
   {name:'向日葵', theme:'花草盆栽', level:3, tip:'12 片花瓣先在 12 點、3 點、6 點、9 點各放一片，再補中間，就會很平均。', secs:[
     ['花莖', [Rp('green',[[60,62],[60,108]],5)], {at:'中間，直直往下'}],
     ['葉子', [Lf('green',46,92,14,30,-55), Lf('green',74,84,14,30,55)], {at:'花莖兩邊'}],
-    ['花瓣', ring12(60,50,19,(x,y,a) => Dr('yellow',x,y,10,18,a)), {at:'繞著花心一圈，尖的朝外'}],
+    ['花瓣', ring12(60,50,19,(x,y,a) => Dr('yellow',x,y,10,18,a,{d3:'slab', dep:4})), {at:'繞著花心一圈，尖的朝外'}],
     ['花心', [F('brown',60,50,26,26,0,{th:4})], {at:'花瓣中間'}],
     ['花心小洞', ring12(60,50,10.5,(x,y) => Ho(x,y,1.7)), {at:'花心外圈'}],
     ['表情', [E(55,48,3.4), E(65,48,3.4), smile(60,53,3), F('orange',52,53,4,2.6), F('orange',68,53,4,2.6)], {at:'花心上'}]]},
   {name:'多肉盆栽', theme:'花草盆栽', level:3, tip:'葉子尖端沾一點點粉紅色，就是會「轉紅」的多肉。', secs:[
     ['土', [F('brown',60,82,46,9)], {at:'花盆上緣'}],
-    ['外層葉子', [-75,-50,-25,0,25,50,75].map(a => Dr('lime',60+14*Math.sin(a*D2R),80-14*Math.cos(a*D2R),10,22,a)), {at:'土上面，排成扇形，尖的朝外'}],
-    ['內層葉子', [-45,-15,15,45].map(a => Dr('green',60+9*Math.sin(a*D2R),78-9*Math.cos(a*D2R),8,16,a)), {at:'外層葉子裡面'}],
+    ['外層葉子', [[-75,0],[-50,-55],[-25,55],[0,0],[25,-55],[50,55],[75,0]].map(([a,ay]) => Dr('lime',60+14*Math.sin(a*D2R),80-14*Math.cos(a*D2R),10,22,a,{ay})), {at:'土上面，排成扇形，尖的朝外'}],
+    ['內層葉子', [[-45,50],[-15,-60],[15,60],[45,-50]].map(([a,ay]) => Dr('green',60+9*Math.sin(a*D2R),78-9*Math.cos(a*D2R),8,16,a,{ay})), {at:'外層葉子裡面'}],
     ['中心', [Dr('green',60,70,7,12)], {at:'正中間'}],
     ['花盆', [Bk('white',60,96,46,26,{tp:.8, n:5})], {base:true}],
     ['盆子花紋', [Rp('sky',[[41,92],[79,92]],3)], {at:'花盆中間'}],
@@ -770,7 +770,7 @@ const LESSONS = [
     ['表情', [E(64,82,3.6), E(76,82,3.6), E(35,92,3), E(45,92,3)], {at:'兩顆柿子上'}],
     ['腮紅', [F('pink',59,87,6,3.6), F('pink',81,87,6,3.6), F('pink',31,96,5,3), F('pink',49,96,5,3)]]]},
   {name:'粽子', theme:'節慶應景', level:1, tip:'端午節前做；綁繩可以換成紅色。', secs:[
-    ['粽子', [Tr('green',60,78,50,46)], {base:true}],
+    ['粽子', [{...Tr('green',60,78,50,46), d3:'slab', dep:32}], {base:true}],
     ['粽葉紋路', [Ln([[45,90],[66,62]],1), Ln([[57,98],[75,74]],1)], {at:'粽子上，斜斜的'}],
     ['綁繩', [Rp('cream',[[37,85],[83,85]],2.6)], {at:'粽子下半部，橫著繞一圈'}],
     ['表情', [E(53,73,3.6), E(67,73,3.6), smile(60,77.5,3)], {at:'粽子上半部'}],
@@ -789,7 +789,7 @@ const LESSONS = [
     ['袋口', [F('red',60,54,34,13,0,{wave:[10,.1]})], {at:'袋子上方'}],
     ['束口', [Bk('red',60,62,22,8,{n:4})], {at:'袋子和袋口中間'}],
     ['金色綁繩', [Rp('yellow',[[47,62],[73,62]],3), Rp('yellow',[[72,62],[78,70],[76,76]],2.4)], {at:'束口上'}],
-    ['菱形貼片', [Bk('yellow',60,86,20,20,{n:6, r:45}), Ht('red',60,86.5,9)], {at:'袋子正中間'}],
+    ['菱形貼片', [Bk('yellow',60,86,20,20,{n:6, r:45, dep:3.5}), Ht('red',60,86.5,9)], {at:'袋子正中間'}],
     ['金幣', [Rg('yellow',44,99,8,.32), Rg('yellow',76,99,8,.32)], {at:'袋子下方兩邊'}]]},
   {name:'聖誕樹', theme:'節慶應景', level:3, tip:'三層樹由下往上越來越小，彩球的顏色左右交錯比較好看。', secs:[
     ['樹幹', [Bk('brown',60,103,12,12,{n:4})], {base:true}],
@@ -799,14 +799,14 @@ const LESSONS = [
     ['彩帶', [Rp('white',[[48,64],[60,66.5],[69,62.5]],2.2), Rp('white',[[42,83],[60,86.5],[77,81]],2.2)], {at:'樹上，斜斜的'}],
     ['小彩球', [B('red',52,74,6), B('sky',68,76,6), B('yellow',60,94,6), B('sky',46,96,6), B('red',74,95,6), B('yellow',60,57,6)], {at:'樹上，左右交錯'}],
     ['星星', [St('yellow',60,38,16)], {at:'樹頂'}],
-    ['禮物', [Bk('red',34,103,14,12,{n:5}), Rp('yellow',[[34,97.5],[34,108.5]],2), Bk('sky',86,104,12,10,{n:5}), Rp('white',[[86,99.5],[86,108.5]],2)], {at:'樹的兩邊'}]]},
+    ['禮物', [Bk('red',34,103,14,12,{n:5, d3:'slab', dep:14}), Rp('yellow',[[34,97.5],[34,108.5]],2), Bk('sky',86,104,12,10,{n:5, d3:'slab', dep:12}), Rp('white',[[86,99.5],[86,108.5]],2)], {at:'樹的兩邊'}]]},
   {name:'錦鯉', theme:'節慶應景', level:3, tip:'「年年有餘」：過年掛在家裡，紅色花斑每條魚都可以不一樣。', secs:[
     ['水波', [Rp('sky',[[18,104],[28,99],[38,104],[48,99],[58,104],[68,99],[78,104],[88,99],[100,104]],5)], {base:true}],
-    ['尾巴', [Dr('red',90,54,14,24,-120), Dr('red',90,70,14,24,-60)], {at:'身體右邊，尖的朝身體'}],
+    ['尾巴', [Dr('red',90,54,14,24,-120,{d3:'slab', dep:5}), Dr('red',90,70,14,24,-60,{d3:'slab', dep:5})], {at:'身體右邊，尖的朝身體'}],
     ['背鰭', [Lf('red',62,44,10,22,70)], {at:'背上'}],
-    ['身體', [O('white',56,62,58,36)], {at:'中間'}],
+    ['身體', [O('white',56,62,58,36,0,{dep:24})], {at:'中間'}],
     ['紅色花斑', [F('red',62,54,16,11,15), F('red',74,66,12,9,-20), F('red',46,70,10,7)], {at:'身體上，隨意'}],
-    ['胸鰭', [Dr('red',48,77,8,14,-150)], {at:'肚子下面'}],
+    ['胸鰭', [Dr('red',48,77,8,14,-150,{d3:'slab', dep:4})], {at:'肚子下面'}],
     ['眼睛和嘴巴', [E(38,58,4.4), B('pink',28,64,5)], {at:'左邊頭部'}],
     ['鱗片', [[56,60],[64,62],[56,70],[66,72],[72,58]].map(([x,y]) => Ln([[x,y-3],[x+2.2,y],[x,y+3]],.8)), {at:'身體上'}],
     ['泡泡', [Rg('sky',20,44,7,.45), Rg('sky',14,32,5,.45), Rg('sky',22,24,4,.45)], {at:'嘴巴前面往上'}]]}
@@ -1241,12 +1241,14 @@ async function playAll(tok, withCaption){
   return true;
 }
 function loadBasic(k, autoRun=true){
+  if (V3.open) close3D();
   loadSeq++; cancelAnim(); caption = null; S.mode = 'basic'; S.basic = k; LD = null;
   steps = buildBasicSteps(BASICS[k]); S.step = 0; renderStepList(); setStateBefore(0);
   if (!autoRun) applyFinal(steps[0]);
   updateUI(); render(); if (autoRun) runStep(0);
 }
 function loadLesson(idx, autoRun=true, keepStep=0){
+  if (V3.open) close3D();
   loadSeq++; cancelAnim(); caption = null; S.mode = 'lesson'; S.lesson = idx; if (idx >= 0) S.last = idx;
   LD = prepLesson(curLes()); steps = buildSteps(LD); renderStepList();
   S.step = clamp(keepStep, 0, steps.length-1); setStateBefore(S.step);
@@ -1537,6 +1539,7 @@ function renderStepList(){
 }
 function setMode(m){
   if (recording) return;
+  if (V3.open) close3D();
   if (m === 'design'){ if (S.mode === 'design') return; cancelAnim(); loadSeq++; caption = null; S.mode = 'design'; LD = null; updateUI(); render(); updateDesignA4(); return; }
   if (m === 'basic'){ if (S.mode === 'basic') return; loadBasic(S.basic); return; }
   if (S.mode === 'lesson' && S.lesson >= 0) return;
@@ -1727,62 +1730,156 @@ new MutationObserver(retheme).observe(document.documentElement, {attributes:true
 let T3 = null;
 const loadThree = () => T3 || (T3 = import('https://cdn.jsdelivr.net/npm/three@0.160.0/+esm'));
 const V3 = {open:false, raf:0, yaw:0, pitch:.18, dist:0, auto:true, onlyStep:false, renderer:null, scene:null, cam:null, model:null, drag:null};
-function half3(p){ // 零件前後方向的半厚度
+function half3(p){ // 零件前後方向的半厚度（只用來估整體大小）
   const w = p.w || 0, h = p.h || 0;
+  if (p.dep) return p.dep/2;
   switch (p.k){
     case 'ball': case 'eye': case 'oval': return Math.min(w, h)/2;
-    case 'drop': return w/2;
-    case 'dome': return w*.4;
-    case 'block': case 'tri': return Math.min(w, h)*.38;
+    case 'drop': case 'dome': return w/2;
+    case 'block': case 'tri': return w/2;
     case 'ring': return Math.min(w, h)*(1-(p.ih||.35))/4 + .8;
     case 'rope': return p.t/2;
     default: return (p.th || 3)/2 + .6;
   }
 }
+function halfW(P, ax, y){ let m = 0; // 外形在高度 y 的半寬（以 ax 為中心）
+  for (let i=0;i<P.length;i++){ const a = P[i], b = P[(i+1)%P.length];
+    if ((a[1] - y)*(b[1] - y) <= 0 && a[1] !== b[1]){ const x = a[0] + (b[0]-a[0])*(y-a[1])/(b[1]-a[1]); m = Math.max(m, Math.abs(x - ax)); } }
+  return m; }
+/* 立體化規則：
+   圓球／橢圓 → 橢圓球（寬扁的橢圓前後也一樣寬）
+   盆子、碗、杯子、麵包、肉排、帽子、菇傘、樹的每一層 → 繞直軸轉一圈（圓的）
+   壓扁的小零件（腮紅、斑點、蒂頭、愛心）→ 薄片，貼著下面那塊的曲面
+   橫跨整個身體的長條（圍巾、碗口、盆子花紋、綁繩）→ 繞一圈的環
+   站在地上的小腳 → 往前放；壓扁的小腳 → 平躺在地上
+   被後面零件蓋住中心的零件（尾巴、背鰭、竹子）→ 放到後面 */
+function mode3(p, ld, base){
+  if (p.d3) return p.d3;
+  const r = Math.abs(p.r || 0) % 180, upright = r < 20 || r > 160, near = (p.y + (p.h||0)/2) >= ld.bb.y1 - 3;
+  switch (p.k){
+    case 'ball': case 'eye': case 'oval': return 'sphere';
+    case 'drop': case 'dome': return 'lathe';
+    case 'block': return upright ? 'lathe' : 'slab';
+    case 'tri': return r < 5 ? 'lathe' : 'slab';
+    case 'flat': if (upright && p.w >= p.h*2.5) return 'lathe'; return near && !base && p.w < ld.bb.w*.3 ? 'lie' : 'slab';
+    case 'rope': return 'rope';
+    default: return 'slab';
+  }
+}
 function build3D(THREE, ld, mask){
-  const root = new THREE.Group(), surf = [], gy = ld.bb.y1, gx = ld.bb.cx;
-  const V3p = (x, y, z) => new THREE.Vector3(x - gx, gy - y, z);
-  const mat = (hex, k) => new THREE.MeshStandardMaterial({color:hex, roughness: k === 'eye' ? .22 : .78, metalness:0});
-  const front = (x, y) => { let z = -Infinity;
-    for (const q of surf){ if (!inPoly([x,y], q.P)) continue; const nx = (x-q.bb.cx)/(q.bb.w/2||1), ny = (y-q.bb.cy)/(q.bb.h/2||1);
-      z = Math.max(z, q.cz + q.c*(q.flat ? 1 : Math.sqrt(Math.max(.25, 1-nx*nx-ny*ny)))); }
-    return z; };
-  const curveOn = (p, lift, base) => sampleCR(xf(p.lp, p.x, p.y, 1, p.r), 6).map(([x,y]) => { const z = front(x,y); return V3p(x, y, isFinite(z) ? z + lift : base); });
-  const tube = (pts, r, m) => { const g = new THREE.Group(), cv = new THREE.CatmullRomCurve3(pts);
-    g.add(new THREE.Mesh(new THREE.TubeGeometry(cv, Math.max(16, pts.length*3), r, 14, false), m));
-    for (const e of [pts[0], pts[pts.length-1]]){ const s = new THREE.Mesh(new THREE.SphereGeometry(r, 16, 12), m); s.position.copy(e); g.add(s); }
+  const root = new THREE.Group(), surf = [], parts = ld.parts, bb = ld.bb;
+  const isClay = p => !NONCLAY.has(p.k);
+  const maxHalf = Math.max(5, ...parts.filter(isClay).map(half3));
+  const secOf = []; ld.secs.forEach((s, si) => s.parts.forEach(i => secOf[i] = si));
+  const P3 = (x, y, z) => new THREE.Vector3(x - bb.cx, bb.y1 - y, z);
+  const mat = (hex, k) => new THREE.MeshStandardMaterial({color:hex, roughness: k === 'eye' ? .22 : .8, metalness:0});
+  const dark = () => new THREE.MeshStandardMaterial({color:'#1a0c05', transparent:true, opacity:.35, roughness:1, depthWrite:false});
+  const Z = new THREE.Vector3(0,0,1);
+  const hostAt = (x, y) => { let best = null;
+    for (const q of surf){ if (!inPoly([x,y], q.P)) continue; const s = q.at(x, y); if (!best || s.z > best.z) best = {...s, q}; }
+    return best; };
+  const tube = (pts, r, m, closed=false) => { const g = new THREE.Group(), cv = new THREE.CatmullRomCurve3(pts, closed);
+    g.add(new THREE.Mesh(new THREE.TubeGeometry(cv, Math.max(24, pts.length*4), r, 14, closed), m));
+    if (!closed) for (const e of [pts[0], pts[pts.length-1]]){ const s = new THREE.Mesh(new THREE.SphereGeometry(r, 16, 12), m); s.position.copy(e); g.add(s); }
     return g; };
   const shapeOf = (P, holes) => { const s = new THREE.Shape(P.map(([x,y]) => new THREE.Vector2(x, -y)));
     for (const H of holes || []) s.holes.push(new THREE.Path(H.slice().reverse().map(([x,y]) => new THREE.Vector2(x, -y)))); return s; };
-  const extrude = (P, holes, d, bt, bs) => { const g = new THREE.ExtrudeGeometry(shapeOf(P, holes), {depth:Math.max(.2, d - 2*bt), bevelEnabled:true, bevelThickness:bt, bevelSize:bs, bevelOffset:-bs, bevelSegments:5, curveSegments:4, steps:1});
-    g.translate(0, 0, -Math.max(.2, d - 2*bt)/2); return g; };
-  ld.parts.forEach((p, i) => {
+  const extrude = (P, holes, d, bt, bs) => { const core = Math.max(.2, d - 2*bt);
+    const g = new THREE.ExtrudeGeometry(shapeOf(P, holes), {depth:core, bevelEnabled:true, bevelThickness:bt, bevelSize:bs, bevelOffset:-bs, bevelSegments:5, curveSegments:4, steps:1});
+    g.translate(0, 0, -core/2); return g; };
+  const lathe = P0 => new THREE.LatheGeometry(P0.slice(0, NP/2+1).map(([x,y]) => new THREE.Vector2(Math.max(.001, x), -y)), 48);
+  const behindOf = i => { const p = parts[i];
+    for (let j=i+1;j<parts.length;j++){ const q = parts[j]; if (!isClay(q) || (mask && !mask[j])) continue;
+      const b = bboxOf(worldPts(q)); if (b.w*b.h <= (p.w||10)*(p.h||10)) continue;
+      const u = (p.x-b.cx)/(b.w/2), v = (p.y-b.cy)/(b.h/2); if (u*u + v*v <= 1.05) return half3(q); }
+    return 0; };
+  const orient = (obj, n, r) => { obj.quaternion.setFromUnitVectors(Z, n); obj.rotateZ(-(r||0)*D2R); };
+
+  parts.forEach((p, i) => {
     if (mask && !mask[i]) return;
-    if (p.k === 'line'){ root.add(tube(curveOn(p, .25, 2), (p.w||.9)*.42, new THREE.MeshStandardMaterial({color:'#000', transparent:true, opacity:.32, roughness:1}))); return; }
-    if (p.k === 'hole'){ const z = front(p.x, p.y), m = new THREE.Mesh(new THREE.CircleGeometry(p.w/2, 20), new THREE.MeshBasicMaterial({color:'#2a1408', transparent:true, opacity:.6})); m.position.copy(V3p(p.x, p.y, (isFinite(z) ? z : 2) + .15)); root.add(m); return; }
-    if (p.k === 'stick'){ root.add(tube(xf(p.lp, p.x, p.y, 1, p.r).map(([x,y]) => V3p(x, y, 0)), (p.t||2.4)/2, mat('#d6ab6e'))); return; }
-    const c = half3(p), z0 = front(p.x, p.y), flat = FLATK.has(p.k);
-    const cz = isFinite(z0) ? z0 + (flat ? c*.6 : p.k === 'rope' ? 0 : c*.15) : 0;
-    const m = mat(COLORS[p.c].h, p.k), g = geo(p); let obj;
-    if (p.k === 'rope'){ obj = tube(curveOn(p, p.t*.12, cz).map(v => isFinite(z0) ? v : v.setZ(cz)), p.t/2, m); }
-    else {
-      let G;
-      if (p.k === 'ball' || p.k === 'eye' || p.k === 'oval'){ G = new THREE.SphereGeometry(.5, 40, 28); G.scale(p.w, p.h, c*2); }
-      else if (p.k === 'drop' || p.k === 'dome'){ const half = g.P0.slice(0, NP/2+1).map(([x,y]) => new THREE.Vector2(Math.max(0, x), -y));
-        if (p.k === 'dome') half.push(new THREE.Vector2(0, half[half.length-1].y));
-        G = new THREE.LatheGeometry(half, 40); G.scale(1, 1, p.k === 'dome' ? .8 : 1); }
-      else if (p.k === 'ring'){ const ih = p.ih || .35, H = circlePoly(1, 48).map(([x,y]) => [x*p.w*ih, y*p.h*ih]); G = extrude(g.P0, [H], c*2, c*.7, c*.7); }
-      else if (p.k === 'block' || p.k === 'tri'){ G = extrude(g.P0, null, c*2, c*.55, Math.min(p.w, p.h)*.16); }
-      else G = extrude(g.P0, null, c*2, Math.min(c*.6, 1.2), Math.min(1.2, Math.min(p.w, p.h)*.15));
-      obj = new THREE.Mesh(G, m); obj.rotation.z = -(p.r||0)*D2R; obj.position.copy(V3p(p.x, p.y, cz));
-      if (p.k === 'eye'){ const s = new THREE.Mesh(new THREE.SphereGeometry(p.w*.15, 12, 8), new THREE.MeshBasicMaterial({color:'#fff'})); s.position.set(-p.w*.17, p.h*.2, c*.92); obj.add(s); }
-      if (p.k === 'leaf') leafVeins(p).forEach(v => { const pts = v.map(([x,y]) => new THREE.Vector3(x, -y, c + .05)); const t = tube(pts, Math.max(.25, p.w*.025), new THREE.MeshStandardMaterial({color:'#000', transparent:true, opacity:.28})); obj.add(t); });
+    const base = !!ld.secs[secOf[i]].base;
+    /* 壓線、小洞、竹籤 */
+    if (p.k === 'line'){ const pts = sampleCR(xf(p.lp, p.x, p.y, 1, p.r), 6).map(([x,y]) => { const h = hostAt(x,y); return h ? P3(x,y,0).add(new THREE.Vector3(0,0,h.z)).addScaledVector(h.n, .15) : P3(x,y,1); });
+      root.add(tube(pts, (p.w||.9)*.45, dark())); return; }
+    if (p.k === 'hole'){ const h = hostAt(p.x, p.y), m = new THREE.Mesh(new THREE.CircleGeometry(p.w/2, 20), new THREE.MeshBasicMaterial({color:'#2a1408', transparent:true, opacity:.6, depthWrite:false}));
+      if (h){ m.position.copy(P3(p.x, p.y, h.z)).addScaledVector(h.n, .12); orient(m, h.n, 0); } else m.position.copy(P3(p.x, p.y, 2)); root.add(m); return; }
+    if (p.k === 'stick'){ root.add(tube(xf(p.lp, p.x, p.y, 1, p.r).map(([x,y]) => P3(x, y, 0)), (p.t||2.4)/2, mat('#d6ab6e'))); return; }
+
+    const g = geo(p), m = mat(COLORS[p.c].h, p.k), mode = mode3(p, ld, base), host = p.free || p.ay != null ? null : hostAt(p.x, p.y), W = worldPts(p);
+    let obj, entry = null;
+    if (mode === 'rope'){
+      const S = sampleCR(xf(p.lp, p.x, p.y, 1, p.r), 6), xs = S.map(q => q[0]), span = Math.max(...xs) - Math.min(...xs), ym = S.reduce((a, q) => a + q[1], 0)/S.length;
+      const hq = host && (host.q.type === 'lathe' || host.q.type === 'ell') ? host.q : null, hw = hq ? hq.halfW(ym) : 0;
+      if (hq && hw > 0 && span >= hw*1.4){ // 繞一圈的環
+        const a = Math.max(span/2, hw) + p.t*.2, b = hq.halfD(ym) + p.t*.2, pts = [];
+        const yEnd = (S[0][1] + S[S.length-1][1])/2, curveY = x => { let best = S[0]; for (const q of S) if (Math.abs(q[0]-x) < Math.abs(best[0]-x)) best = q; return best[1]; };
+        for (let k=0;k<48;k++){ const t = k/48*TAU, xx = hq.ax + Math.sin(t)*a, front = Math.cos(t);
+          const yy = front > 0 ? lerp(yEnd, curveY(xx), front) : yEnd;
+          pts.push(P3(xx, yy, hq.cz + front*b)); }
+        obj = tube(pts, p.t/2, m, true);
+      } else {
+        const behind = host ? 0 : behindOf(i);
+        const pts = S.map(([x,y]) => { const h = hostAt(x,y); return h ? P3(x,y,0).add(new THREE.Vector3(0,0,h.z)).addScaledVector(h.n, p.t*.15) : P3(x, y, -behind*.6); });
+        obj = tube(pts, p.t/2, m);
+        if (!host) entry = {type:'slab', P:W, cz:-behind*.6, c:p.t/2};
+      }
+    } else {
+      let G, c, type;
+      if (mode === 'sphere'){ const wide = p.w > p.h*1.6 && mode3 && Math.abs(p.r||0) < 20, dep = p.dep || (wide ? p.w : Math.min(p.w, p.h));
+        G = new THREE.SphereGeometry(.5, 40, 28); G.scale(p.w, p.h, dep); c = dep/2; type = 'ell'; }
+      else if (mode === 'lathe'){ const dz = p.dz || (p.k === 'dome' ? .85 : 1); G = lathe(g.P0); G.scale(1, 1, dz); c = p.w/2*dz; type = 'lathe'; entry = {dz}; }
+      else if (mode === 'lie'){ const th = p.th || 3, d = p.w*.85; G = extrude(baseShape('flat', p.w, d), null, th, Math.min(1, th*.35), Math.min(1, p.w*.12)); G.rotateX(-Math.PI/2); c = th/2; type = 'lie'; }
+      else { const d = p.dep || (FLATK.has(p.k) ? (p.th||3) + 1.2 : p.k === 'ring' ? Math.min(p.w,p.h)*(1-(p.ih||.35))/2*.95 : p.k === 'drop' ? p.w*.45 : Math.min(p.w, p.h)*.7);
+        const holes = p.k === 'ring' ? [circlePoly(1, 48).map(([x,y]) => [x*p.w*(p.ih||.35), y*p.h*(p.ih||.35)])] : null;
+        const round = p.k === 'ring' || p.k === 'block' || p.k === 'tri';
+        G = extrude(g.P0, holes, d, round ? d*.36 : Math.min(d*.4, 1.2), round ? Math.min(d*.36, Math.min(p.w,p.h)*.2) : Math.min(1.2, Math.min(p.w, p.h)*.15)); c = d/2; type = 'slab'; }
+      obj = new THREE.Mesh(G, m);
+      let cz = 0;
+      if (mode === 'lie'){ obj.position.copy(P3(p.x, bb.y1 - c, maxHalf*(p.zf ?? .55))); obj.rotation.y = -(p.r||0)*D2R; cz = maxHalf*.55; }
+      else if (host){ // 黏在下面那塊的表面上
+        const at = P3(p.x, p.y, 0).add(new THREE.Vector3(0, 0, host.z));
+        if (type === 'slab'){ orient(obj, host.n, p.r); obj.position.copy(at).addScaledVector(host.n, c*.55); }
+        else if (type === 'lathe' && (host.q.type === 'lathe' || host.q.type === 'ell') && Math.abs(p.x - host.q.ax) < 3 && Math.abs(p.r||0) < 10){ obj.position.copy(P3(host.q.ax, p.y, host.q.cz)); } // 同一根軸：盆口、帽沿、菇傘
+        else { obj.rotation.z = -(p.r||0)*D2R; obj.position.copy(at).addScaledVector(host.n, c*(type === 'lathe' ? .2 : .3)); }
+        cz = obj.position.z;
+      } else {
+        const foot = !base && type !== 'lathe' && p.y > bb.cy && (p.y + p.h/2) >= bb.y1 - 3 && p.w < bb.w*.4;
+        const behind = foot || type === 'lathe' ? 0 : behindOf(i);
+        if (foot) cz = maxHalf*(p.zf ?? .5);
+        else if (behind) cz = -behind*.6;
+        else if (type === 'slab'){ let z = -Infinity; for (const [x,y] of [[p.x,p.y], ...W.filter((_, k) => k % 12 === 0)]){ const h = hostAt(x,y); if (h) z = Math.max(z, h.z); } if (isFinite(z)) cz = z + c*.3; }
+        obj.rotation.z = -(p.r||0)*D2R; obj.position.copy(P3(p.x, p.y, cz));
+      }
+      if (p.ay != null){ // 繞直軸轉到側面或後面（花瓣、多肉葉子）
+        const ax = P3(p.ayx ?? bb.cx, 0, 0).x, t = p.ay*D2R;
+        if (p.ayr != null){ obj.position.x = ax + Math.sin(t)*p.ayr; obj.position.z = Math.cos(t)*p.ayr; obj.rotation.set(0, 0, 0); obj.rotateY(t); obj.rotateX(-.35); obj.rotateZ(-(p.r||0)*D2R); }
+        else { const dx = obj.position.x - ax, z0 = obj.position.z; obj.position.x = ax + dx*Math.cos(t) + z0*Math.sin(t); obj.position.z = -dx*Math.sin(t) + z0*Math.cos(t); obj.rotateOnWorldAxis(new THREE.Vector3(0,1,0), t); }
+        cz = obj.position.z; }
+      if (p.k === 'eye'){ const s = new THREE.Mesh(new THREE.SphereGeometry(p.w*.15, 12, 8), new THREE.MeshBasicMaterial({color:'#fff'})); s.position.set(-p.w*.17, p.h*.2, c*.9); obj.add(s); }
+      if (p.k === 'leaf') leafVeins(p).forEach(v => obj.add(tube(v.map(([x,y]) => new THREE.Vector3(x, -y, c + .05)), Math.max(.25, p.w*.025), dark())));
+      if (type !== 'lie') entry = {...(entry||{}), type, P:W, cz, c, ax:p.x, ay:p.y, w:p.w, h:p.h};
     }
     obj.traverse(o => { if (o.isMesh){ o.castShadow = true; o.receiveShadow = true; } });
     root.add(obj);
-    surf.push({P:worldPts(p), bb:bboxOf(worldPts(p)), cz, c, flat: flat || p.k === 'rope' || p.k === 'block'});
+    if (entry){ // 之後的零件可以黏在它上面
+      const e = entry, b = bboxOf(W);
+      if (e.type === 'ell'){ const a = b.w/2, bh = b.h/2, cx = b.cx, cy = b.cy;
+        e.at = (x, y) => { const u = (x-cx)/a, v = (y-cy)/bh, k = Math.max(.03, 1-u*u-v*v), w = Math.sqrt(k); return {z:e.cz + e.c*w, n:new THREE.Vector3(u/a, -v/bh, w/e.c).normalize()}; };
+        e.halfW = y => { const v = (y-cy)/bh; return a*Math.sqrt(Math.max(0, 1-v*v)); }; e.halfD = y => { const v = (y-cy)/bh; return e.c*Math.sqrt(Math.max(0, 1-v*v)); }; e.ax = cx; }
+      else if (e.type === 'lathe'){ const dz = e.dz || 1;
+        e.halfW = y => halfW(W, e.ax, y); e.halfD = y => halfW(W, e.ax, y)*dz;
+        e.at = (x, y) => { const R = halfW(W, e.ax, y), dx = x - e.ax, zz = Math.sqrt(Math.max(0, R*R - dx*dx))*dz; return {z:e.cz + zz, n:new THREE.Vector3(dx, 0, Math.max(.3, zz/dz)).normalize()}; }; }
+      else e.at = () => ({z:e.cz + e.c, n:Z.clone()});
+      surf.push(e);
+    }
   });
-  return root;
+  const outer = new THREE.Group(); outer.add(root);
+  if (ld.les.view === 'top') root.rotation.x = -Math.PI/2;
+  outer.updateMatrixWorld(true);
+  const box = new THREE.Box3().setFromObject(root), ctr = box.getCenter(new THREE.Vector3());
+  root.position.x -= ctr.x; root.position.z -= ctr.z; root.position.y -= box.min.y;
+  outer.userData.size = box.getSize(new THREE.Vector3());
+  return outer;
 }
 function v3Lesson(){
   if (S.mode === 'design') return DS.parts.length ? customLesson() : null;
@@ -1800,15 +1897,15 @@ async function open3D(){
   const sc = V3.scene = new THREE.Scene();
   sc.add(new THREE.HemisphereLight('#fffaf2', '#d9c6b0', 1.5));
   const key = new THREE.DirectionalLight('#ffffff', 2.2); key.position.set(-60, 120, 140); key.castShadow = true;
-  Object.assign(key.shadow.camera, {left:-90, right:90, top:110, bottom:-30, near:1, far:400}); key.shadow.mapSize.set(2048, 2048); key.shadow.bias = -.0005; key.shadow.radius = 4; sc.add(key);
+  Object.assign(key.shadow.camera, {left:-110, right:110, top:130, bottom:-60, near:1, far:500}); key.shadow.mapSize.set(2048, 2048); key.shadow.bias = -.0005; key.shadow.radius = 4; sc.add(key);
   const fill = new THREE.DirectionalLight('#ffe9d6', .7); fill.position.set(90, 40, 80); sc.add(fill);
   const ld = prepLesson(les), mask = V3.onlyStep && S.mode === 'lesson' && LD ? V.placed : null;
   if (mask && !mask.some(Boolean)){ $('#v3Msg').textContent = '這一步還沒有黏上任何零件'; }
   const model = build3D(THREE, ld, mask);
-  const ground = new THREE.Mesh(new THREE.CircleGeometry(Math.max(ld.bb.w, ld.bb.h)*.9 + 20, 64), new THREE.MeshStandardMaterial({color:BOARD, roughness:1}));
+  const sz = model.userData.size, ground = new THREE.Mesh(new THREE.CircleGeometry(Math.max(sz.x, sz.z)*.8 + 24, 64), new THREE.MeshStandardMaterial({color:BOARD, roughness:1}));
   ground.rotation.x = -Math.PI/2; ground.receiveShadow = true; ground.position.y = -.2;
   const pivot = new THREE.Group(); pivot.add(model); pivot.add(ground); sc.add(pivot); V3.model = pivot;
-  V3.center = new THREE.Vector3(0, ld.bb.h/2, 0); V3.dist = Math.max(ld.bb.w, ld.bb.h)*2.4 + 40; V3.yaw = .5; V3.pitch = .2;
+  V3.center = new THREE.Vector3(0, sz.y*.45, 0); V3.dist = Math.max(sz.x, sz.y, sz.z)*2.4 + 40; V3.yaw = .5; V3.pitch = .2;
   V3.cam = new THREE.PerspectiveCamera(35, 1, 1, 2000);
   if (!mask || mask.some(Boolean)) $('#v3Msg').hidden = true;
   cancelAnimationFrame(V3.raf); let last = performance.now();
@@ -1848,7 +1945,7 @@ updateDesignStat();
 resize();
 loadBasic(0, false); setTimeout(() => runStep(0), 400);
 fontsReady().then(() => render());
-window.__clay = {S, V, LESSONS, BASICS, prepLesson, makeSheet, makeCover, renderArt, drawMaking, drawPartAt, iconCanvas, geo, setMode, loadLesson, loadBasic, runStep, get steps(){ return steps; }, get LD(){ return LD; }};
+window.__clay = {S, V, LESSONS, BASICS, prepLesson, build3D: (...a) => build3D(...a), makeSheet, makeCover, renderArt, drawMaking, drawPartAt, iconCanvas, geo, setMode, loadLesson, loadBasic, runStep, get steps(){ return steps; }, get LD(){ return LD; }};
 })();
 </script>
 
